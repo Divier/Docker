@@ -54,6 +54,11 @@ ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
 >docker build . -t diviercasas26/ms-account:v1
 
 >docker image push docker.io/diviercasas26/ms-cards:V1 (El push permite subir una imagen propia creada, al repositorio de dockerHub y con pull se puede cargar una imagen)
+>docker image tag cron-ticker diviercasas26/cron-ticker //Renombrar imagen para subir a Dockerhub
+>docker push diviercasas26/cron-ticker // Para subir a Dockerhub
+>docker login //Ejecutar en caso que se requiera autenticacion
+>docker image prune -a //Eliminar todas las imagenes
+>docker container run diviercasas26/cron-ticker:latest //Ejecutar el contenedor
 
 
 - Tras ejecutarse el anterior comando se puede verificar la imagen creada:
@@ -76,6 +81,20 @@ ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
 
 >docker run -p 8000:8001 724dcfccdcf7 (Permite levantar el contenerdor en el puerto 8000 (que es el puerto externo) (8001 es el puerto interno))
 >docker run -p 8000:8001 nombreImagen (Permite levantar tambien con el nombre de la imagen que se haya definido en el comando build)
+
+
+## Dockerignore
+- Este archivo especifica todo lo que hay que ignorar en un proceso de construccion (build)
+
+
+
+## Buildx
+>docker buildx ls //listar los build
+>docker buildx create --name container-builder --driver docker-container --use --bootstrap
+>docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8 -t diviercasas26/cron-ticker:latest --push . //Permite subir la imagen a dockerhub compatible para las plataformas definidas
+
+
+
 
 ## Dockerfile:
 
@@ -256,6 +275,8 @@ Ejemplo de uso del volumen
 >docker container run --name=world-db -e MARIADB_USER=example-user -e MARIADB_PASSWORD=user-password -e MARIADB_ROOT_PASSWORD=root-secret-password -e MARIADB_DATABASE=world-db -v world-db:/var/lib/mysql -dp 3306:3306 mariadb:jammy
 
 
+
+
 ##Bind Volumes 
 
 - Este comando instala una aplicacion de nest y enlaza las dependencias de node en el directorio del host local y del contenedor
@@ -357,7 +378,7 @@ En cualquier caso no olvidar agregar en el pom:
 <packaging>jar</packaging>
 
 # https://buildpacks.io/
-Permite crear contenedores de docker sin necesidad de escribir los comandos mano en el Dockerfile.
+Permite crear contenedores de docker sin necesidad de escribir los comandos a mano en el Dockerfile.
 - Instalar en el pom:
 <plugin>
 	<groupId>org.springframework.boot</groupId>
