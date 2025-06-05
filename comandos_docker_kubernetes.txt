@@ -414,7 +414,7 @@ Utilidad de google que permite crear imagenes optimizadas de docker sin utilizar
 .\mvnw.cmd compile jib:dockerBuild
 
 ################################################################################################################################################################
-########################################################################## KUBERNETES ##########################################################################
+########################################################################## KUBERNETES K8S ######################################################################
 ################################################################################################################################################################
 
 # Kubernetes
@@ -424,6 +424,34 @@ Utilidad de google que permite crear imagenes optimizadas de docker sin utilizar
 - Un Master Node se encarga de manjear los Worker Node
 - Un cluster agrupa los componentes anteriores y dicho cluster esta sobre algun Cloud Provider API
 - Toda la configuracion de kubernetes queda dentro de una BD que se llama Etcd de pares y valores
+
+
+# Kubernetes K8S
+8 Componentes clave:
+- Pod: 
+	- Son los objetos implementables mas pequeños y basicos en K8S, es una capa abstracta sobre uno o mas contenedores
+	- Tienen una IP unica asiganada que al reconstruirse cambia
+- Service
+	- Tienen IP unica asignada, el servicio sabe cual es la direccion IP de los contenedores, lo cual, permite la comunicacion entre contenedores, asi la IP de alguno cambie.
+	- El ciclo de vida del Pod y del Service son independientes
+	- Hay dos tipos de Services, los que son Internos y Externos
+- Ingress
+	- Una nueva solicitud a nuestro sitio web (por ejm) entra primero por el Ingress y este a los respectivos servicios
+- ConfigMap
+	- Se puede ver como las variables de entorno (Ejm: URL de la BD)
+- Secret
+	- Se puede ver como las variables de entorno pero seguras (K8S NO ENCRIPTA) (Ejm: Credenciales, llaves secretas)
+- Volume
+	- Almacenamiento en una maquina local, o lugar remoto fuera del cluster de K8s. K8s no maneja la persistencia de la data 
+- Deployment
+	- Es como el plano o "Blueprint" para crear un Pod y la cantidad de replicas, Aqui es donde puede escalar arriba o abajo las replicas
+- StatefulSet
+	- Es el plano similar a los deployments, pero para bases de datos principalmente
+	- No se puede replicar la BD
+
+
+# Cluster
+- un grupo de nodos que corren aplicaciones en contenedores de una forma eficiente, automatizada, distribuida y escalable
 
 
 # Herramientas necesarias
@@ -437,17 +465,38 @@ https://kubernetes.io/es/docs/tasks/tools/
 	2. >kubectl version --client   //Para validar la instalacion
 	3. Crear el directorio .kube en: C:\Users\hsrx4\
 	4. En la anterior ubicacion en el mismo powershell ejecutar >New-Item config -type file 
-- minikube
+- minikube: Es una herramienta que permite configurar un entorno de Kubernetes en una computadora
 	https://minikube.sigs.k8s.io/docs/start/
 	1. Descargar e instalar el .exe
-	2. Descargar e instalar Hiper-v  //Al instalar Docker en un winows pro ya deb existir Hiper-v
+	2. Descargar e instalar Hiper-v  //Al instalar Docker en un windows pro ya debe existir Hiper-v
 	3. Ejecutar:
 	>minikube start --driver=hyperv
+	
+	### Otra forma de instalar y configurar minikube ###
+	
+	- Para instalar minikube primero instalar chocolatey y luego ejecutar
+	>choco install minikube
+	- validar con
+	>minikube version
+	- Iniciar un cluster
+	>minikube start
+	- El anterior comando instala el kubectl
+	- El siguiente comando elimina todos los cluster de minikube
+	>minikube delete --all
+	Validar que se encuentre instalado el kubectl
+	>kubectl version
+
+>kubectl get all  //Permite ver la informacion del cluster
+>kubectl apply -f postgres-config.yml  //Aplicar la configuracion del archivo
+>kubectl apply -f postgres-secrets.yml
+>kubectl apply -f postgres.yml
+>kubectl get all  // Permite ver la informacion del cluster
+>kubectl describe deployment.apps/postgres-deployment
+>kubectl logs pod/postgres-deployment-7bf76bffb5-6rn6h
+>kubectl rollout restart deployment backend-deployment  //Permite reinicar un deployment para aplicra nuevos cambios
+
+# Para obtener el mapeo del puerto que se va a exponer a nuestra computadora
+>minikube service pg-admin-service
 
 
-# Pod
-- El objeto Pod es la unidad mas pequeña que tenemos en Kubernetes
-
-
-# Deployment
-- El objeto Deployment controla a los pod
+	
