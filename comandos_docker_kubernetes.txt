@@ -238,6 +238,7 @@ nombre-contenedor:puerto ....
 
 #ORACLE
 >docker pull gvenzl/oracle-xe:latest  (Para crear imagen de una BD Oracle version 21c Express Edition Release 21.0.0.0.0 - Production)
+>docker run -d -p 1521:1521 -e ORACLE_PASSWORD=123456 -v oracle-volume:/opt/oracle/oradata gvenzl/oracle-xe:21-slim
 >docker run -d -p 1522:1521 --name oracle -e ORACLE_PASSWORD=123456 --network spring gvenzl/oracle-xe
 (Para levantar contenedor de la imagen de Oracle sobre la red spring)
 
@@ -455,11 +456,50 @@ Utilidad de google que permite crear imagenes optimizadas de docker sin utilizar
 
 
 # Herramientas necesarias
+- https://helm.sh/   //Package manager para kubernetes
+- Para windows instalar chocolately
+>choco install kubernetes-helm
+>helm create <nombreProyecto>
+>kubectl create deployment client-gateway --image=diviercasas26/client-gateway --dry-run=client -o yaml > deployment.yml   //crear despliegue de una imagen que se encuentra en un reposotiorio como docker hub
+- Ejecutar dentro del directorio del proyecto creado:
+>helm install tienda . //Se ejecuta una primera vez
+>helm upgrade tienda . //Se ejecuta cada vez q se necesite realizar una actualizacion
+
+# Services
+
+- Crear un servicio para poder comunicar un pod con el mundo exterior:
+kubectl create service nodeport <nombre> --tcp=<3000> --dry-run=client -o yaml > service.yml
+- Tras crear el servicio requerido no olvidar hacer el helm upgrade ...
+- Crear un servicio para poder comunicar un pod con otro pod:
+kubectl create service clusterip <nombre> --tcp=<8888> --dry-run=client -o yaml > service.yml
+- Tras crear el servicio requerido no olvidar hacer el helm upgrade ...
+>kubectl get services // Para ver los servicios configurados
+
+
+# Secrets
+
+- kubectl create secret generic <nombre> --from-literal=key=value
+Ejm kubectl create secret generic orders-ms-secrets --from-literal=database_url="postgresql://postgres:123456@localhost:5432/ordersdb?schema=public"
+- En el archivo deployment que corresponda, se debe agregar el secret asi:
+...
+	env:
+	  - name: PORT
+		value: "3000"
+	  ...
+	  - name: DATABASE_URL
+		valueFrom:
+			secretKeyRef:
+				name: orders-ms-secrets
+				key: database_url
+...
+>kubectl get secrets // Para ver los secrets configurados
+
+
 https://kubernetes.io/es/docs/tasks/tools/
 - kubectl
 	Usa la herramienta de línea de comandos de Kubernetes
 	Abrir Power Shell
-	https://chocolatey.org/install#individual    //Instalar chocolately eejcutar el comando que alli se encuentra
+	https://chocolatey.org/install#individual    //Instalar chocolately ejecutar el comando que alli se encuentra
 	https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/#install-on-windows-using-chocolatey-or-scoop
 	1. >choco install kubernetes-cli
 	2. >kubectl version --client   //Para validar la instalacion
@@ -493,7 +533,8 @@ https://kubernetes.io/es/docs/tasks/tools/
 >kubectl get all  // Permite ver la informacion del cluster
 >kubectl describe deployment.apps/postgres-deployment
 >kubectl logs pod/postgres-deployment-7bf76bffb5-6rn6h
->kubectl rollout restart deployment backend-deployment  //Permite reinicar un deployment para aplicra nuevos cambios
+>kubectl rollout restart deployment backend-deployment  //Permite reinicar un deployment para aplicar nuevos cambios
+
 
 # Para obtener el mapeo del puerto que se va a exponer a nuestra computadora
 >minikube service pg-admin-service
