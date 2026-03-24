@@ -548,6 +548,20 @@ services:
 Ejm: mongo_poke   
 MONGODB=mongodb://mongo-poke:27017/nest-pokemon
 
+
+
+# Posibles Utilidades #
+- NgRok
+https://dashboard.ngrok.com/get-started/setup/windows
+Ngrok es una plataforma de redes en la nube que crea túneles seguros y públicos hacia tu entorno de desarrollo local (localhost). 
+Permite exponer servidores web, APIs y webhooks locales a Internet, facilitando pruebas y demostraciones en tiempo real sin configurar firewalls o IPs públicas.
+Instalacion:
+>winget install ngrok -s msstore
+>ngrok config add-authtoken 3BPGY9aOQjduToUf3orSj1V0hAj_6bCDW7z3kF3eMrayJLVrr
+>ngrok http 3000 // El puerto depende de q app local deseamos trabajar
+
+
+
 ################################################################################################################################################################
 ########################################################################## KUBERNETES K8S ######################################################################
 ################################################################################################################################################################
