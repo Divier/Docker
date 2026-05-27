@@ -295,6 +295,7 @@ sh -c "yarn install && yarn start:dev"
 >docker network create world-app //Crear una red
 >docker network connect world-app CONTAINER_ID //Agregar un contenedor a una red
 >docker network inspect world-app 
+>docker network inspect kafka-net
 >docker container run --name phpmyadmin -d -e PMA_ARBITRARY=1 -p 8083:80 phpmyadmin:5.2.0-apache
 >docker container run --name=world-db -e MARIADB_USER=example-user -e MARIADB_PASSWORD=user-password -e MARIADB_ROOT_PASSWORD=root-secret-password -e MARIADB_DATABASE=world-db -v world-db:/var/lib/mysql -dp 3306:3306 --network world-app mariadb:jammy
 >docker container run --name phpmyadmin -d -e PMA_ARBITRARY=1 -p 8083:80 --network world-app phpmyadmin:5.2.0-apache
